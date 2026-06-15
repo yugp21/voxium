@@ -142,7 +142,7 @@ const Register = () => {
       });
       dispatch(setUser(res.data.user));
       toast.success("Welcome to Voxium! Your legend begins now.");
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (err) {
       const msg = err.response?.data?.message || "Registration failed";
       toast.error(msg);
