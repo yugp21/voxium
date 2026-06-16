@@ -11,8 +11,7 @@ const getProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
 
   const user = await User.findOne({ username: username.toLowerCase() })
-    .select("-password -refreshToken")
-    .populate("achievements");
+    .select("-password -refreshToken");
 
   if (!user) throw new ApiError(404, "Player not found");
 
