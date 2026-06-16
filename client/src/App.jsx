@@ -13,6 +13,9 @@ import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Leaderboard from "./pages/Leaderboard";
 import Profile from "./pages/Profile";
+import Matchmaking from "./pages/Matchmaking";
+import PrepWindow from "./pages/PrepWindow";
+import DebateRoom from "./pages/DebateRoom";
 import NotFound from "./pages/NotFound";
  
 function App() {
@@ -41,6 +44,9 @@ function App() {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
       <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/matchmaking" element={<ProtectedRoute><Matchmaking /></ProtectedRoute>} />
+      <Route path="/prep/:debateId" element={<ProtectedRoute><PrepWindow /></ProtectedRoute>} />
+      <Route path="/debate/:debateId" element={<ProtectedRoute><DebateRoom /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
