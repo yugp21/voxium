@@ -16,6 +16,8 @@ import Profile from "./pages/Profile";
 import Matchmaking from "./pages/Matchmaking";
 import PrepWindow from "./pages/PrepWindow";
 import DebateRoom from "./pages/DebateRoom";
+import Notifications from "./pages/Notifications";
+import SearchUsers from "./pages/SearchUsers";
 import NotFound from "./pages/NotFound";
  
 function App() {
@@ -47,6 +49,8 @@ function App() {
       <Route path="/matchmaking" element={<ProtectedRoute><Matchmaking /></ProtectedRoute>} />
       <Route path="/prep/:debateId" element={<ProtectedRoute><PrepWindow /></ProtectedRoute>} />
       <Route path="/debate/:debateId" element={<ProtectedRoute><DebateRoom /></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+      <Route path="/search" element={<ProtectedRoute><SearchUsers /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
