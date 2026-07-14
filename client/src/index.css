@@ -1,0 +1,216 @@
+@import "tailwindcss";
+ 
+/* ─── VOXIUM DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  /* Colors */
+  --bg-primary: #0a0a0a;
+  --bg-surface: #111111;
+  --bg-card: #1a1a1a;
+  --bg-elevated: #222222;
+  --border: #2a2a2a;
+  --border-gold: #c9a84c40;
+ 
+  /* Gold palette */
+  --gold-primary: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dark: #a07830;
+  --gold-glow: #c9a84c20;
+ 
+  /* Text */
+  --text-primary: #f5f0e8;
+  --text-muted: #8a8070;
+  --text-faint: #4a4540;
+ 
+  /* Status */
+  --danger: #c0392b;
+  --success: #27ae60;
+  --warning: #f39c12;
+ 
+  /* Fonts */
+  --font-display: "Cinzel", serif;
+  --font-decorative: "Cinzel Decorative", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+ 
+/* ─── BASE STYLES ───────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+html {
+  scroll-behavior: smooth;
+}
+ 
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+ 
+/* ─── SCROLLBAR ─────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 2px;
+}
+ 
+/* ─── TYPOGRAPHY CLASSES ────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+ 
+.font-decorative {
+  font-family: var(--font-decorative);
+}
+ 
+.font-mono {
+  font-family: var(--font-mono);
+}
+ 
+/* ─── GOLD TEXT GRADIENT ─────────────────────────────────────────── */
+.text-gold {
+  color: var(--gold-primary);
+}
+ 
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-primary), var(--gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+ 
+/* ─── GLOW EFFECTS ──────────────────────────────────────────────── */
+.glow-gold {
+  box-shadow: 0 0 20px var(--gold-glow), 0 0 40px var(--gold-glow);
+}
+ 
+.text-glow-gold {
+  text-shadow: 0 0 20px var(--gold-primary), 0 0 40px var(--gold-dark);
+}
+ 
+/* ─── CARD STYLES ───────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+ 
+.card-gold {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+}
+ 
+/* ─── BUTTON BASE ───────────────────────────────────────────────── */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+  color: #0a0a0a;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+ 
+.btn-gold:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+  box-shadow: 0 0 30px var(--gold-glow);
+  transform: translateY(-1px);
+}
+ 
+.btn-outline-gold {
+  background: transparent;
+  color: var(--gold-primary);
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--gold-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+ 
+.btn-outline-gold:hover {
+  background: var(--gold-glow);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+ 
+/* ─── INPUT STYLES ──────────────────────────────────────────────── */
+.input-dark {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  transition: border-color 0.2s ease;
+}
+ 
+.input-dark:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 2px var(--gold-glow);
+}
+ 
+.input-dark::placeholder {
+  color: var(--text-faint);
+}
+ 
+/* ─── ANIMATIONS ────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+ 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+ 
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 10px var(--gold-glow); }
+  50% { box-shadow: 0 0 30px var(--gold-primary), 0 0 60px var(--gold-glow); }
+}
+ 
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+ 
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+ 
+.animate-pulse-gold {
+  animation: pulse-gold 2s ease-in-out infinite;
+}
+ 
+/* ─── TIER COLORS ───────────────────────────────────────────────── */
+.tier-wanderer { color: #8a8070; }
+.tier-vanguard { color: #6b9fb8; }
+.tier-oracle { color: #9b7fd4; }
+.tier-ascendant { color: #4caf82; }
+.tier-sovereign { color: #c9a84c; }
+.tier-conqueror { color: #e8604c; }
+.tier-immortal { color: #ffffff; text-shadow: 0 0 20px #ffffff80; }
+ 
+/* ─── NOISE TEXTURE OVERLAY ─────────────────────────────────────── */
+.noise-overlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.3;
+}
+ 
