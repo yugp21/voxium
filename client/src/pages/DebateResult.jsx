@@ -72,7 +72,7 @@ const DebateResult = () => {
   const { debateId } = useParams();
   const navigate = useNavigate();
   const { user } = useSelector((s) => s.auth);
-  const { isMobile, isTablet } = useR();
+  const { isMobile } = useR();
 
   const [debate, setDebate]       = useState(null);
   const [verdict, setVerdict]     = useState(null);
@@ -101,6 +101,7 @@ const DebateResult = () => {
     }
   }, [debateId, navigate]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount; setState only fires after the await, not synchronously in the effect body
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const fetchAIVerdict = async () => {
