@@ -58,7 +58,10 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { emailOrUsername, password } = req.body;
 
-  if (!emailOrUsername || !password) {
+  // Type guard is intentionally duplicated here (validator middleware also
+  // checks this) — controllers should never trust upstream middleware alone
+  // for a query that touches the DB directly.
+  if (typeof emailOrUsername !== "string" || typeof password !== "string" || !emailOrUsername || !password) {
     throw new ApiError(400, "Email/username and password are required");
   }
 
