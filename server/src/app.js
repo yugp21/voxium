@@ -1,15 +1,19 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const errorMiddleware = require("./middlewares/errorMiddleware");
+const { apiLimiter } = require("./middlewares/rateLimiter");
 
 const app = express();
 
+app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json({ limit:"10mb" }));
 app.use(express.urlencoded({ extended:true, limit:"10mb" }));
 app.use(cookieParser());
+app.use("/api", apiLimiter);
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
 // ─── ROUTES ───────────────────────────────────────────────────────
