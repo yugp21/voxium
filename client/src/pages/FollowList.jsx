@@ -110,6 +110,7 @@ const FollowList = () => {
   };
 
   const handleToggleFollow = async (person) => {
+    if (busyId) return; // ignore clicks while any row is already in flight
     setBusyId(person._id);
     try {
       if (person.isFollowing) {
@@ -121,7 +122,15 @@ const FollowList = () => {
       }
       setUsers((prev) => prev.map((u) => u._id === person._id ? { ...u, isFollowing: !u.isFollowing } : u));
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong");
+      const status = err.response?.status;
+      if (status === 409) {
+        // Already following server-side — local state was stale; sync instead of erroring
+        setUsers((prev) => prev.map((u) => u._id === person._id ? { ...u, isFollowing: true } : u));
+      } else if (status === 404) {
+        setUsers((prev) => prev.map((u) => u._id === person._id ? { ...u, isFollowing: false } : u));
+      } else {
+        toast.error(err.response?.data?.message || "Something went wrong");
+      }
     } finally {
       setBusyId(null);
     }
