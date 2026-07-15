@@ -20,6 +20,7 @@ import DebateResult from "./pages/DebateResult";
 import AITopics from "./pages/AITopics";
 import Notifications from "./pages/Notifications";
 import SearchUsers from "./pages/SearchUsers";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
       <Route path="/ai/topics"         element={<ProtectedRoute><AITopics /></ProtectedRoute>} />
       <Route path="/notifications"     element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/search"            element={<ProtectedRoute><SearchUsers /></ProtectedRoute>} />
+      <Route path="/settings"          element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
