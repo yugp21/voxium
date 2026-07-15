@@ -41,6 +41,11 @@ const UserRow = ({ person, onToggleFollow, isMe, busy }) => {
         <div style={{ fontFamily: "Inter,sans-serif", fontSize: "0.72rem", color: "#4a4540" }}>
           @{person.username} · <span style={{ color: tierColor }}>{person.tier}</span>
         </div>
+        {person.isFollowing && person.followsYou && (
+          <div style={{ fontFamily: "Inter,sans-serif", fontSize: "0.65rem", color: "#c9a84c", marginTop: "0.15rem" }}>
+            ⚔️ You both follow each other
+          </div>
+        )}
       </div>
 
       {!isMe && (
@@ -57,7 +62,7 @@ const UserRow = ({ person, onToggleFollow, isMe, busy }) => {
             cursor: busy ? "not-allowed" : "pointer", fontWeight: 700,
             opacity: busy ? 0.6 : 1,
           }}
-        >{person.isFollowing ? "FOLLOWING" : "FOLLOW"}</motion.button>
+        >{person.isFollowing ? "FOLLOWING" : person.followsYou ? "FOLLOW BACK" : "FOLLOW"}</motion.button>
       )}
     </div>
   );

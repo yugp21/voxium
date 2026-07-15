@@ -78,6 +78,7 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [debates, setDebates] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followsYou, setFollowsYou] = useState(false);
   const [loading, setLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
 
@@ -93,6 +94,7 @@ const Profile = () => {
       const res = await api.get(`/users/${username}`);
       setProfile(res.data.data.user);
       setIsFollowing(res.data.data.isFollowing);
+      setFollowsYou(res.data.data.followsYou);
 
       // Fetch debates
       const debRes = await api.get(`/debates/history/${res.data.data.user._id}`);
@@ -288,20 +290,27 @@ const Profile = () => {
             {/* Action buttons */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", flexShrink: 0 }}>
               {!isMyProfile ? (
-                <motion.button
-                  whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-                  onClick={handleFollow}
-                  disabled={followLoading}
-                  style={{
-                    padding: "0.6rem 1.5rem",
-                    background: isFollowing ? "transparent" : "linear-gradient(135deg,#c9a84c,#a07830)",
-                    border: isFollowing ? "1px solid #c9a84c" : "none",
-                    borderRadius: 8, color: isFollowing ? "#c9a84c" : "#0a0a0a",
-                    fontFamily: "Cinzel,serif", fontSize: "0.72rem",
-                    letterSpacing: "0.1em", cursor: "pointer", fontWeight: 700,
-                    minWidth: 120,
-                  }}
-                >{followLoading ? "..." : isFollowing ? "FOLLOWING" : "FOLLOW"}</motion.button>
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                    onClick={handleFollow}
+                    disabled={followLoading}
+                    style={{
+                      padding: "0.6rem 1.5rem",
+                      background: isFollowing ? "transparent" : "linear-gradient(135deg,#c9a84c,#a07830)",
+                      border: isFollowing ? "1px solid #c9a84c" : "none",
+                      borderRadius: 8, color: isFollowing ? "#c9a84c" : "#0a0a0a",
+                      fontFamily: "Cinzel,serif", fontSize: "0.72rem",
+                      letterSpacing: "0.1em", cursor: "pointer", fontWeight: 700,
+                      minWidth: 120,
+                    }}
+                  >{followLoading ? "..." : isFollowing ? "FOLLOWING" : followsYou ? "FOLLOW BACK" : "FOLLOW"}</motion.button>
+                  {isFollowing && followsYou && (
+                    <div style={{ fontFamily: "Inter,sans-serif", fontSize: "0.65rem", color: "#c9a84c", textAlign: "center" }}>
+                      ⚔️ You both follow each other
+                    </div>
+                  )}
+                </>
               ) : (
                 <motion.button
                   whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
