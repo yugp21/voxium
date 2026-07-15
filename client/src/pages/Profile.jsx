@@ -316,14 +316,31 @@ const Profile = () => {
                 >EDIT PROFILE</motion.button>
               )}
 
-              {/* Followers count */}
-              <div style={{ textAlign: "center" }}>
-                <div style={{
-                  fontFamily: "Cinzel,serif", fontSize: "1rem",
-                  color: "#f5f0e8", fontWeight: 700,
-                }}>{profile?.stats?.followersCount || 0}</div>
-                <div style={{ fontSize: "0.62rem", color: "#4a4540", fontFamily: "Inter,sans-serif" }}>
-                  followers
+              {/* Followers / Following */}
+              <div style={{ display: "flex", gap: "1.2rem" }}>
+                <div
+                  onClick={() => navigate(`/profile/${profile?.username}/connections?tab=followers`)}
+                  style={{ textAlign: "center", cursor: "pointer" }}
+                >
+                  <div style={{
+                    fontFamily: "Cinzel,serif", fontSize: "1rem",
+                    color: "#f5f0e8", fontWeight: 700,
+                  }}>{profile?.stats?.followersCount || 0}</div>
+                  <div style={{ fontSize: "0.62rem", color: "#4a4540", fontFamily: "Inter,sans-serif" }}>
+                    followers
+                  </div>
+                </div>
+                <div
+                  onClick={() => navigate(`/profile/${profile?.username}/connections?tab=following`)}
+                  style={{ textAlign: "center", cursor: "pointer" }}
+                >
+                  <div style={{
+                    fontFamily: "Cinzel,serif", fontSize: "1rem",
+                    color: "#f5f0e8", fontWeight: 700,
+                  }}>{profile?.stats?.supportersCount || 0}</div>
+                  <div style={{ fontSize: "0.62rem", color: "#4a4540", fontFamily: "Inter,sans-serif" }}>
+                    following
+                  </div>
                 </div>
               </div>
             </div>

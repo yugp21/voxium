@@ -21,6 +21,7 @@ import AITopics from "./pages/AITopics";
 import Notifications from "./pages/Notifications";
 import SearchUsers from "./pages/SearchUsers";
 import Settings from "./pages/Settings";
+import FollowList from "./pages/FollowList";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
       <Route path="/notifications"     element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/search"            element={<ProtectedRoute><SearchUsers /></ProtectedRoute>} />
       <Route path="/settings"          element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      <Route path="/profile/:username/connections" element={<ProtectedRoute><FollowList /></ProtectedRoute>} />
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
