@@ -153,6 +153,85 @@ const unfollowUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Unfollowed successfully"));
 });
 
+// ─── GET FOLLOWERS ─────────────────────────────────────────────────
+// People who follow :username
+const getFollowers = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const targetUser = await User.findOne({ username: username.toLowerCase() }).select("_id");
+  if (!targetUser) throw new ApiError(404, "Player not found");
+
+  const [follows, total] = await Promise.all([
+    Follower.find({ followingId: targetUser._id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit))
+      .populate("followerId", "name username profileImage tier elo"),
+    Follower.countDocuments({ followingId: targetUser._id }),
+  ]);
+
+  // Figure out which of these followers the requester themselves follows,
+  // in one query, so the frontend can render a correct button per row
+  // without an extra round trip per user.
+  let myFollowing = new Set();
+  if (req.user) {
+    const ids = follows.map((f) => f.followerId?._id).filter(Boolean);
+    const mine = await Follower.find({ followerId: req.user._id, followingId: { $in: ids } }).select("followingId");
+    myFollowing = new Set(mine.map((m) => m.followingId.toString()));
+  }
+
+  const users = follows
+    .filter((f) => f.followerId) // guard against a stale row pointing at a deleted user
+    .map((f) => ({
+      ...f.followerId.toObject(),
+      isFollowing: myFollowing.has(f.followerId._id.toString()),
+    }));
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { users, total, page: Number(page), hasMore: skip + users.length < total }, "Followers fetched"));
+});
+
+// ─── GET FOLLOWING ─────────────────────────────────────────────────
+// People :username follows
+const getFollowing = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const targetUser = await User.findOne({ username: username.toLowerCase() }).select("_id");
+  if (!targetUser) throw new ApiError(404, "Player not found");
+
+  const [follows, total] = await Promise.all([
+    Follower.find({ followerId: targetUser._id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit))
+      .populate("followingId", "name username profileImage tier elo"),
+    Follower.countDocuments({ followerId: targetUser._id }),
+  ]);
+
+  let myFollowing = new Set();
+  if (req.user) {
+    const ids = follows.map((f) => f.followingId?._id).filter(Boolean);
+    const mine = await Follower.find({ followerId: req.user._id, followingId: { $in: ids } }).select("followingId");
+    myFollowing = new Set(mine.map((m) => m.followingId.toString()));
+  }
+
+  const users = follows
+    .filter((f) => f.followingId)
+    .map((f) => ({
+      ...f.followingId.toObject(),
+      isFollowing: myFollowing.has(f.followingId._id.toString()),
+    }));
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { users, total, page: Number(page), hasMore: skip + users.length < total }, "Following fetched"));
+});
+
 // ─── SEARCH USERS ─────────────────────────────────────────────────
 const searchUsers = asyncHandler(async (req, res) => {
   const { q, page = 1, limit = 10 } = req.query;
@@ -185,5 +264,7 @@ module.exports = {
   uploadAvatar,
   followUser,
   unfollowUser,
+  getFollowers,
+  getFollowing,
   searchUsers,
 };
