@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Debate = require("../models/Debate");
 const Round = require("../models/Round");
 const Vote = require("../models/Vote");
@@ -36,6 +37,20 @@ const debateSocket = (io, socket) => {
     if (!activeDebates[debateId]) return;
 
     const userId = socket.user._id.toString();
+
+    // Only the two actual debaters can ready-up. Without this check any
+    // spectator/audience member in the room (join_debate has no role
+    // restriction, by design, for voting) could start rounds for a debate
+    // they aren't in.
+    const debate = await Debate.findById(debateId).select("player1 player2");
+    if (!debate) return;
+    const isParticipant =
+      debate.player1.toString() === userId || debate.player2.toString() === userId;
+    if (!isParticipant) {
+      socket.emit("vote_error", { message: "Only debate participants can ready up" });
+      return;
+    }
+
     if (!activeDebates[debateId].readyPlayers.includes(userId)) {
       activeDebates[debateId].readyPlayers.push(userId);
     }
@@ -78,7 +93,7 @@ const debateSocket = (io, socket) => {
 
       // Get live vote counts for this round
       const votes = await Vote.aggregate([
-        { $match: { roundId: require("mongoose").Types.ObjectId(roundId) } },
+        { $match: { roundId: new mongoose.Types.ObjectId(roundId) } },
         { $group: { _id: "$voteFor", count: { $sum: 1 } } },
       ]);
 
