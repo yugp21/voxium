@@ -97,9 +97,17 @@ const Register = () => {
       navigate("/onboarding");
     } catch (err) {
       const msg = err.response?.data?.message || "Registration failed. Try again.";
-      toast.error(msg);
-      if (msg.toLowerCase().includes("username")) { setErrors({username:"Username already taken"}); setStep(0); }
-      else if (msg.toLowerCase().includes("email")) { setErrors({email:"Email already registered"}); setStep(1); }
+      if (msg.toLowerCase().includes("username")) {
+        toast.error("⚔️ That username is already taken in the arena!");
+        setErrors({username:"Username already taken — choose another"});
+        setStep(0);
+      } else if (msg.toLowerCase().includes("email")) {
+        toast.error("📧 This email is already registered!");
+        setErrors({email:"Email already registered — try logging in"});
+        setStep(1);
+      } else {
+        toast.error(msg);
+      }
     } finally { setLoading(false); }
   };
 
