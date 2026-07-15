@@ -109,7 +109,7 @@ const Profile = () => {
   };
 
   const handleFollow = async () => {
-    if (!profile) return;
+    if (!profile || followLoading) return;
     setFollowLoading(true);
     try {
       if (isFollowing) {
@@ -124,7 +124,18 @@ const Profile = () => {
         toast.success("Following!");
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error");
+      const status = err.response?.status;
+      // 409 "already following" / 404 "not following" mean our local state
+      // was already stale before this click — self-correct instead of just
+      // showing an error, so the button can't be mashed into a loop of
+      // identical failing requests.
+      if (status === 409) {
+        setIsFollowing(true);
+      } else if (status === 404 && err.response?.data?.message?.toLowerCase().includes("not following")) {
+        setIsFollowing(false);
+      } else {
+        toast.error(err.response?.data?.message || "Error");
+      }
     } finally {
       setFollowLoading(false);
     }
