@@ -1,6 +1,7 @@
 // AI Service — Gemini powers all AI features
 // Why: AI Judge, Coach, DNA, Topics all go through here
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { callGeminiJSON } = require("../utils/geminiHelpers");
 
 let genAI = null;
 
@@ -50,15 +51,12 @@ Analyze this debate and respond in this EXACT JSON format:
 
 Return ONLY valid JSON, no markdown, no extra text.
 `;
-  try {
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text().trim();
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    return JSON.parse(cleaned);
-  } catch (err) {
-    console.error("AI Judge error:", err.message);
+  const verdict = await callGeminiJSON(getModel(), prompt, { label: "AI Judge" });
+  if (verdict && !["player1", "player2", "draw"].includes(verdict.winnerKey)) {
+    console.error("AI Judge returned malformed winnerKey:", verdict.winnerKey);
     return null;
   }
+  return verdict;
 };
 
 // ── AI COACH ─────────────────────────────────────────────────────
@@ -95,15 +93,7 @@ Respond in this EXACT JSON format:
 
 Return ONLY valid JSON, no markdown, no extra text.
 `;
-  try {
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text().trim();
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    return JSON.parse(cleaned);
-  } catch (err) {
-    console.error("AI Coach error:", err.message);
-    return null;
-  }
+  return callGeminiJSON(getModel(), prompt, { label: "AI Coach" });
 };
 
 // ── DEBATE DNA ANALYZER ───────────────────────────────────────────
@@ -134,15 +124,7 @@ Respond in this EXACT JSON format:
 
 Return ONLY valid JSON, no markdown, no extra text.
 `;
-  try {
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text().trim();
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    return JSON.parse(cleaned);
-  } catch (err) {
-    console.error("AI DNA error:", err.message);
-    return null;
-  }
+  return callGeminiJSON(getModel(), prompt, { label: "AI DNA" });
 };
 
 // ── AI TOPIC GENERATOR ───────────────────────────────────────────
@@ -170,16 +152,8 @@ Respond in this EXACT JSON format:
 
 Return ONLY valid JSON, no markdown, no extra text.
 `;
-  try {
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text().trim();
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed.topics || [];
-  } catch (err) {
-    console.error("AI Topics error:", err.message);
-    return [];
-  }
+  const parsed = await callGeminiJSON(getModel(), prompt, { label: "AI Topics" });
+  return parsed?.topics || [];
 };
 
 // ── AI DEBATE SUMMARY ────────────────────────────────────────────
@@ -206,15 +180,7 @@ Respond in this EXACT JSON format:
 
 Return ONLY valid JSON, no markdown, no extra text.
 `;
-  try {
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text().trim();
-    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
-    return JSON.parse(cleaned);
-  } catch (err) {
-    console.error("AI Summary error:", err.message);
-    return null;
-  }
+  return callGeminiJSON(getModel(), prompt, { label: "AI Summary" });
 };
 
 module.exports = { judgeDebate, coachPlayer, analyzeDebateDNA, generateTopics, summarizeDebate };
