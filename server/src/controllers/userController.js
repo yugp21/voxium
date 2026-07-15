@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const Follower = require("../models/Follower");
-const Notification = require("../models/Notification");
+const { notify } = require("../utils/notify");
 const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
@@ -119,11 +119,12 @@ const followUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { $inc: { "stats.supportersCount": 1 } });
 
   // Send notification to followed user
-  await Notification.create({
+  await notify({
     userId: targetUserId,
     title: "New Follower",
     message: `${req.user.username} is now following you`,
     type: "new_follower",
+    link: `/profile/${req.user.username}`,
     data: { followerId: req.user._id },
   });
 

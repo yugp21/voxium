@@ -3,6 +3,7 @@ const Debate = require("../models/Debate");
 const Round = require("../models/Round");
 const Vote = require("../models/Vote");
 const User = require("../models/User");
+const { notify } = require("../utils/notify");
 const { calculateEloChange, determineWinner } = require("../services/eloService");
 const { ROUND_DURATIONS } = require("../config/constants");
 
@@ -242,6 +243,25 @@ const finalizeDebate = async (io, debateId) => {
     },
   });
 
+  await notify({
+    userId: debate.player1._id,
+    title: result === "player1" ? "Victory!" : result === "player2" ? "Defeat" : "Draw",
+    message: `Your debate on "${debate.topic}" vs ${debate.player2.username} has ended (${eloResult.player1.change >= 0 ? "+" : ""}${eloResult.player1.change} ELO)`,
+    type: "debate_result",
+    link: `/debate/${debateId}/result`,
+    data: { debateId, result, eloChange: eloResult.player1.change },
+  });
+  if (eloResult.player1.newTier !== debate.player1.tier) {
+    await notify({
+      userId: debate.player1._id,
+      title: eloResult.player1.newElo > debate.player1.elo ? "Tier Up!" : "Tier Down",
+      message: `You are now ${eloResult.player1.newTier} tier`,
+      type: eloResult.player1.newElo > debate.player1.elo ? "tier_up" : "tier_down",
+      link: `/profile/${debate.player1.username}`,
+      data: { newTier: eloResult.player1.newTier },
+    });
+  }
+
   // Update player 2 stats and ELO
   await User.findByIdAndUpdate(debate.player2._id, {
     elo: eloResult.player2.newElo,
@@ -252,6 +272,25 @@ const finalizeDebate = async (io, debateId) => {
       "stats.totalDebates": 1,
     },
   });
+
+  await notify({
+    userId: debate.player2._id,
+    title: result === "player2" ? "Victory!" : result === "player1" ? "Defeat" : "Draw",
+    message: `Your debate on "${debate.topic}" vs ${debate.player1.username} has ended (${eloResult.player2.change >= 0 ? "+" : ""}${eloResult.player2.change} ELO)`,
+    type: "debate_result",
+    link: `/debate/${debateId}/result`,
+    data: { debateId, result, eloChange: eloResult.player2.change },
+  });
+  if (eloResult.player2.newTier !== debate.player2.tier) {
+    await notify({
+      userId: debate.player2._id,
+      title: eloResult.player2.newElo > debate.player2.elo ? "Tier Up!" : "Tier Down",
+      message: `You are now ${eloResult.player2.newTier} tier`,
+      type: eloResult.player2.newElo > debate.player2.elo ? "tier_up" : "tier_down",
+      link: `/profile/${debate.player2.username}`,
+      data: { newTier: eloResult.player2.newTier },
+    });
+  }
 
   // Broadcast final result to debate room
   io.to(`debate:${debateId}`).emit("debate_result", {

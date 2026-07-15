@@ -1,4 +1,5 @@
 const Debate = require("../models/Debate");
+const { notify } = require("../utils/notify");
 
 // In-memory queue: { userId, socketId, tier, division, language, mode, joinedAt }
 const matchmakingQueue = [];
@@ -138,6 +139,26 @@ const matchmakingSocket = (io, socket) => {
       });
 
       console.log(`🥊 Match found: ${playerEntry.username} vs ${opponent.username}`);
+
+      // Persisted notifications in addition to the immediate socket event —
+      // match_found above only reaches an actively-connected socket; this
+      // survives a reconnect/refresh and shows up in notification history.
+      await notify({
+        userId: playerEntry.userId,
+        title: "Opponent Found",
+        message: `Matched against ${opponent.username} — "${topic}"`,
+        type: "match_found",
+        link: `/debate/${debate._id}`,
+        data: { debateId: debate._id },
+      });
+      await notify({
+        userId: opponent.userId,
+        title: "Opponent Found",
+        message: `Matched against ${playerEntry.username} — "${topic}"`,
+        type: "match_found",
+        link: `/debate/${debate._id}`,
+        data: { debateId: debate._id },
+      });
     } else {
       // No match yet, add to queue
       matchmakingQueue.push(playerEntry);
