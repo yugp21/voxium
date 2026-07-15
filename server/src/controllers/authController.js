@@ -34,12 +34,26 @@ const register = asyncHandler(async (req, res) => {
   }
 
   // Create user (password hashed automatically via User model pre-save hook)
-  const user = await User.create({
-    name,
-    username: username.toLowerCase(),
-    email: email.toLowerCase(),
-    password,
-  });
+  // The findOne check above is a fast, friendly UX check but is NOT atomic —
+  // two near-simultaneous requests could both pass it. The unique index on
+  // username/email in the User model is the real guarantee; catching E11000
+  // here means duplicates are rejected cleanly even in a race, and even if
+  // the index temporarily failed to build (e.g. pre-existing dirty data).
+  let user;
+  try {
+    user = await User.create({
+      name,
+      username: username.toLowerCase(),
+      email: email.toLowerCase(),
+      password,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern || {})[0] || "field";
+      throw new ApiError(409, `${field === "username" ? "Username" : "Email"} already taken`);
+    }
+    throw err;
+  }
 
   // Generate tokens
   const { accessToken, refreshToken } = await generateAndSaveTokens(user._id);
