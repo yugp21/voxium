@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/slices/authSlice";
 import api from "../services/api";
 import toast from "react-hot-toast";
+import { ArrowLeft } from "lucide-react";
 
 const PLAYING_STYLES = ["", "Aggressive", "Analytical", "Emotional", "Logical", "Creative"];
 const LANGUAGE_OPTIONS = ["English", "Spanish", "French", "German", "Hindi", "Portuguese", "Arabic", "Mandarin"];
@@ -116,8 +117,9 @@ const Settings = () => {
               background: "transparent", border: "1px solid #2a2a2a", color: "#8a8070",
               padding: "0.35rem 0.9rem", borderRadius: 6, fontFamily: "Cinzel,serif",
               fontSize: "0.65rem", letterSpacing: "0.1em", cursor: "pointer",
+              display: "flex", alignItems: "center", gap: "0.4rem",
             }}
-          >← BACK</button>
+          ><ArrowLeft size={13} /> BACK</button>
         </div>
 
         <Field label="NAME">
