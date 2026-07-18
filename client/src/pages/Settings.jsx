@@ -32,7 +32,7 @@ const Settings = () => {
   const { user } = useSelector((s) => s.auth);
 
   const [form, setForm] = useState({
-    name: "", bio: "", country: "", playingStyle: "", languages: [],
+    name: "", bio: "", country: "", state: "", district: "", playingStyle: "", languages: [],
   });
   const [saving, setSaving] = useState(false);
 
@@ -43,6 +43,8 @@ const Settings = () => {
         name: user.name || "",
         bio: user.bio || "",
         country: user.country || "",
+        state: user.state || "",
+        district: user.district || "",
         playingStyle: user.playingStyle || "",
         languages: user.languages?.length ? user.languages : ["English"],
       });
@@ -73,6 +75,8 @@ const Settings = () => {
         name: form.name.trim(),
         bio: form.bio.trim(),
         country: form.country.trim(),
+        state: form.state.trim(),
+        district: form.district.trim(),
         playingStyle: form.playingStyle,
         languages: form.languages,
       });
@@ -134,6 +138,23 @@ const Settings = () => {
             onChange={(e) => setForm({ ...form, country: e.target.value })}
             placeholder="e.g. India" />
         </Field>
+
+        <div style={{ display: "flex", gap: "0.7rem" }}>
+          <div style={{ flex: 1 }}>
+            <Field label="STATE / PROVINCE">
+              <input style={inputStyle} value={form.state}
+                onChange={(e) => setForm({ ...form, state: e.target.value })}
+                placeholder="Optional" />
+            </Field>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Field label="DISTRICT / CITY">
+              <input style={inputStyle} value={form.district}
+                onChange={(e) => setForm({ ...form, district: e.target.value })}
+                placeholder="Optional" />
+            </Field>
+          </div>
+        </div>
 
         <Field label="DEBATE STYLE">
           <select
