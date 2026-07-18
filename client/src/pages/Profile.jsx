@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import api from "../services/api";
 import toast from "react-hot-toast";
+import TrophyCase from "../components/TrophyCase";
 
 const useResponsive = () => {
   const [w, setW] = useState(window.innerWidth);
@@ -383,6 +384,8 @@ const Profile = () => {
           <StatBox label="Debates" value={profile?.stats?.totalDebates || 0} color="#9b7fd4" />
           <StatBox label="Streak" value={profile?.stats?.longestStreak || 0} color="#6b9fb8" />
         </motion.div>
+
+        {profile?.username && <TrophyCase username={profile.username} />}
 
         {/* ── DEBATE HISTORY ───────────────────────────────── */}
         <motion.div
