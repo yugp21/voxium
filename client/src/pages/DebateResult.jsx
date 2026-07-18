@@ -152,7 +152,7 @@ const DebateResult = () => {
   return (
     <div style={{ background: "#0a0a0a", minHeight: "100vh" }}>
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: isMobile ? "0.9rem 1.2rem" : "0.9rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#0f0f0fF0", backdropFilter: "blur(12px)", borderBottom: "1px solid #1a1a1a" }}>
-        <div style={{ fontFamily: "Cinzel Decorative,serif", fontSize: isMobile ? "0.85rem" : "1rem", color: "#c9a84c", letterSpacing: "0.2em", cursor: "pointer" }} onClick={() => navigate("/dashboard")}>VOXIUM</div>
+        <div style={{ fontFamily: "Cinzel Decorative,serif", fontSize: isMobile ? "0.85rem" : "1rem", color: "#c9a84c", letterSpacing: "0.2em", cursor: "pointer" }} onClick={() => navigate("/dashboard")}>UDA</div>
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/dashboard")}
           style={{ background: "transparent", border: "1px solid #2a2a2a", color: "#8a8070", padding: "0.4rem 1rem", fontFamily: "Cinzel,serif", fontSize: "0.68rem", letterSpacing: "0.1em", cursor: "pointer", borderRadius: 6 }}
         >← DASHBOARD</motion.button>

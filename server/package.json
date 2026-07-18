@@ -1,7 +1,7 @@
 {
-  "name": "voxium-server",
+  "name": "uda-server",
   "version": "1.0.0",
-  "description": "Voxium Backend API",
+  "description": "UDA Backend API",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

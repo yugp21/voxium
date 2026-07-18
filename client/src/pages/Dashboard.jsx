@@ -83,7 +83,7 @@ const Navbar = ({ user, onLogout, isMobile }) => {
       <div style={{
         fontFamily:"Cinzel Decorative, serif", fontSize: isMobile ? "0.85rem" : "1rem",
         color:"#c9a84c", letterSpacing:"0.2em", cursor:"pointer",
-      }} onClick={() => navigate("/dashboard")}>VOXIUM</div>
+      }} onClick={() => navigate("/dashboard")}>UDA</div>
  
       {!isMobile && (
         <div style={{ display:"flex", gap:"0.5rem" }}>

@@ -410,7 +410,7 @@ const Landing = () => {
               filter: "drop-shadow(0 0 40px #c9a84c25)",
             }}
           >
-            {titleScrambled ? <ScrambleText text="VOXIUM" delay={0} /> : "VOXIUM"}
+            {titleScrambled ? <ScrambleText text="UDA" delay={0} /> : "UDA"}
           </motion.h1>
  
           <motion.p
@@ -717,7 +717,7 @@ const Landing = () => {
       }}>
         <Logo size={24} showText onClick={() => navigate("/")} />
         <div style={{ fontFamily: "Inter, sans-serif", color: "#3a3530", fontSize: "0.7rem" }}>
-          © 2026 Voxium - Where Voices Become Legends
+          © 2026 UDA - Unlimited Debate Arena
         </div>
       </footer>
     </div>

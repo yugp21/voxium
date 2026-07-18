@@ -25,7 +25,7 @@ app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/achievements",  require("./routes/achievementRoutes"));
 app.use("/api/ai",            require("./routes/aiRoutes"));
 
-app.get("/api/health", (req, res) => res.json({ status:"ok", message:"Voxium API running" }));
+app.get("/api/health", (req, res) => res.json({ status:"ok", message:"UDA API running" }));
 app.use((req, res) => res.status(404).json({ success:false, message:"Route not found" }));
 app.use(errorMiddleware);
 

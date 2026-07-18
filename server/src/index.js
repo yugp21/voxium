@@ -23,7 +23,7 @@ initSocket(server);
 // Connect to DB then start server
 connectDB().then(() => {
   server.listen(PORT, () => {
-    console.log(`🚀 Voxium server running on port ${PORT}`);
+    console.log(`🚀 UDA server running on port ${PORT}`);
     console.log(`📡 Environment: ${process.env.NODE_ENV}`);
     console.log(`🌐 Client URL: ${process.env.CLIENT_URL}`);
   });

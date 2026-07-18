@@ -124,7 +124,7 @@ const PrepWindow = () => {
         }}
       >
         <div>
-          <div style={{ fontFamily:"Cinzel Decorative,serif", fontSize:"0.9rem", color:"#c9a84c", letterSpacing:"0.2em", marginBottom:"0.2rem" }}>VOXIUM</div>
+          <div style={{ fontFamily:"Cinzel Decorative,serif", fontSize:"0.9rem", color:"#c9a84c", letterSpacing:"0.2em", marginBottom:"0.2rem" }}>UDA</div>
           <div style={{ fontFamily:"JetBrains Mono,monospace", fontSize:"0.65rem", color:"#4a4540", letterSpacing:"0.15em" }}>PREPARATION PHASE</div>
         </div>
  

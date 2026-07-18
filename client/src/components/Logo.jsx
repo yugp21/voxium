@@ -61,7 +61,7 @@ const Logo = ({ size = 32, showText = false, onClick, style = {} }) => (
           lineHeight: 1,
         }}
       >
-        VOXIUM
+        UDA
       </span>
     )}
   </div>

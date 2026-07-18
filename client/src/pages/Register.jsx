@@ -93,7 +93,7 @@ const Register = () => {
         password: form.password,
       });
       dispatch(setUser(res.data.user));
-      toast.success("Welcome to Voxium! Your legend begins.");
+      toast.success("Welcome to UDA! Your legend begins.");
       navigate("/onboarding");
     } catch (err) {
       const msg = err.response?.data?.message || "Registration failed. Try again.";
@@ -124,7 +124,7 @@ const Register = () => {
         <div style={{ position:"absolute", top:0, left:"10%", right:"10%", height:1, background:"linear-gradient(90deg,transparent,#c9a84c,transparent)" }}/>
 
         <div style={{ textAlign:"center", marginBottom:"1.5rem" }}>
-          <div onClick={()=>navigate("/")} style={{ fontFamily:"Cinzel Decorative,serif", fontSize:"1.2rem", color:"#c9a84c", letterSpacing:"0.2em", cursor:"pointer", marginBottom:"1.2rem", display:"inline-block" }}>VOXIUM</div>
+          <div onClick={()=>navigate("/")} style={{ fontFamily:"Cinzel Decorative,serif", fontSize:"1.2rem", color:"#c9a84c", letterSpacing:"0.2em", cursor:"pointer", marginBottom:"1.2rem", display:"inline-block" }}>UDA</div>
           <h1 style={{ fontFamily:"Cinzel,serif", fontSize:"clamp(1.1rem,4vw,1.4rem)", color:"#f5f0e8", fontWeight:700, marginBottom:"0.4rem" }}>Begin Your Legacy</h1>
           <p style={{ color:"#8a8070", fontSize:"0.8rem", fontFamily:"Inter,sans-serif" }}>
             {step===0?"Choose your identity in the arena":"Secure your account"}

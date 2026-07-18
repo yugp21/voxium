@@ -104,7 +104,7 @@ const Onboarding = () => {
           <div style={{
             fontFamily:"Cinzel Decorative, serif", fontSize:"1rem",
             color:"#c9a84c", letterSpacing:"0.2em", marginBottom:"1rem",
-          }}>VOXIUM</div>
+          }}>UDA</div>
           <h1 style={{
             fontFamily:"Cinzel, serif", fontSize:"clamp(1.1rem,4vw,1.4rem)",
             color:"#f5f0e8", fontWeight:700, marginBottom:"0.4rem",

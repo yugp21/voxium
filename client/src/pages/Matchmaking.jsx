@@ -137,7 +137,7 @@ const Matchmaking = () => {
         borderBottom:"1px solid #1a1a1a",
       }}>
         <div style={{ fontFamily:"Cinzel Decorative,serif", fontSize:isMobile?"0.85rem":"1rem", color:"#c9a84c", letterSpacing:"0.2em", cursor:"pointer" }}
-          onClick={()=>navigate("/dashboard")}>VOXIUM</div>
+          onClick={()=>navigate("/dashboard")}>UDA</div>
         {phase==="select" && (
           <motion.button whileHover={{scale:1.05}} whileTap={{scale:0.95}}
             onClick={()=>navigate("/dashboard")}

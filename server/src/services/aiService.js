@@ -18,7 +18,7 @@ const getModel = () => getAI().getGenerativeModel({ model: "gemini-1.5-flash" })
 // Analyzes debate and gives a winner verdict with detailed reasoning
 const judgeDebate = async ({ topic, division, player1Name, player2Name, player1Notes, player2Notes, audienceVotes }) => {
   const prompt = `
-You are an expert debate judge for Voxium, the world's first competitive debate esport.
+You are an expert debate judge for UDA, the world's first competitive debate esport.
 
 DEBATE DETAILS:
 - Topic: "${topic}"
@@ -63,7 +63,7 @@ Return ONLY valid JSON, no markdown, no extra text.
 // Post-debate personal coaching feedback
 const coachPlayer = async ({ playerName, topic, division, won, playerNotes, opponentNotes, audienceVotes }) => {
   const prompt = `
-You are an elite debate coach for Voxium, the world's first competitive debate esport.
+You are an elite debate coach for UDA, the world's first competitive debate esport.
 
 Give personalized coaching feedback to ${playerName} who just ${won ? "WON" : "LOST"} a debate.
 
@@ -100,7 +100,7 @@ Return ONLY valid JSON, no markdown, no extra text.
 // Analyzes player's debate history to determine their style DNA
 const analyzeDebateDNA = async ({ playerName, debateHistory, totalWins, totalLosses }) => {
   const prompt = `
-You are analyzing the debate style DNA of ${playerName} on Voxium.
+You are analyzing the debate style DNA of ${playerName} on UDA.
 
 Stats: ${totalWins} wins, ${totalLosses} losses
 Recent debates: ${JSON.stringify(debateHistory?.slice(0, 5) || [])}
@@ -131,7 +131,7 @@ Return ONLY valid JSON, no markdown, no extra text.
 // Generates fresh, engaging debate topics by division
 const generateTopics = async (division, count = 5) => {
   const prompt = `
-Generate ${count} fresh, controversial, and engaging debate topics for the ${division} division on Voxium debate platform.
+Generate ${count} fresh, controversial, and engaging debate topics for the ${division} division on UDA debate platform.
 
 Topics should be:
 - Thought-provoking and controversial
@@ -160,7 +160,7 @@ Return ONLY valid JSON, no markdown, no extra text.
 // Creates a shareable summary of a completed debate
 const summarizeDebate = async ({ topic, player1Name, player2Name, winner, score, division }) => {
   const prompt = `
-Create a dramatic, engaging debate summary for Voxium (competitive debate esport).
+Create a dramatic, engaging debate summary for UDA (competitive debate esport).
 
 DEBATE:
 - Topic: "${topic}"

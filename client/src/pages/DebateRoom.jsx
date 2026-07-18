@@ -199,7 +199,7 @@ const DebateRoom = () => {
         display:"flex", alignItems:"center", justifyContent:"space-between",
         flexWrap:"wrap", gap:"0.5rem",
       }}>
-        <div style={{ fontFamily:"Cinzel Decorative,serif", fontSize:"0.85rem", color:"#c9a84c", letterSpacing:"0.2em" }}>VOXIUM</div>
+        <div style={{ fontFamily:"Cinzel Decorative,serif", fontSize:"0.85rem", color:"#c9a84c", letterSpacing:"0.2em" }}>UDA</div>
  
         {/* Round indicator */}
         <AnimatePresence>

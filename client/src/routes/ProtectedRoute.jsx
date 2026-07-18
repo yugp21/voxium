@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#0a0a0a" }}>
         <div className="text-center">
           <p className="font-display text-gold text-lg tracking-widest animate-pulse">
-            VOXIUM
+            UDA
           </p>
         </div>
       </div>

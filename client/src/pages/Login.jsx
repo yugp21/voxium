@@ -157,7 +157,7 @@ const Login = () => {
               color: "#c9a84c", letterSpacing: "0.2em",
               cursor: "pointer", marginBottom: "1.5rem", display: "inline-block",
             }}
-          >VOXIUM</motion.div>
+          >UDA</motion.div>
  
           <motion.h1
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}

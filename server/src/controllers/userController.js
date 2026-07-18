@@ -69,7 +69,7 @@ const completeOnboarding = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Onboarding complete. Welcome to Voxium!"));
+    .json(new ApiResponse(200, user, "Onboarding complete. Welcome to UDA!"));
 });
 
 // ─── UPLOAD AVATAR ────────────────────────────────────────────────
