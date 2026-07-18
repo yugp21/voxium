@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Trophy, Lock } from "lucide-react";
 import api from "../services/api";
 
 const TrophyCase = ({ username }) => {
@@ -39,7 +40,7 @@ const TrophyCase = ({ username }) => {
     }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
         <h3 style={{ fontFamily: "Cinzel,serif", fontSize: "0.85rem", color: "#f5f0e8", letterSpacing: "0.05em" }}>
-          🏆 Trophy Case
+          <Trophy size={16} style={{ display: "inline", verticalAlign: "-2px", marginRight: 6 }} /> Trophy Case
         </h3>
         <span style={{ fontFamily: "Inter,sans-serif", fontSize: "0.72rem", color: "#4a4540" }}>
           {totalEarned}/{totalAvailable}
@@ -84,7 +85,7 @@ const TrophyCase = ({ username }) => {
               opacity: 0.45, cursor: "default",
             }}
           >
-            <span style={{ fontSize: "1.5rem", filter: "grayscale(1)" }}>🔒</span>
+            <Lock size={20} color="#4a4540" strokeWidth={1.75} />
             <span style={{
               fontFamily: "Cinzel,serif", fontSize: "0.6rem", color: "#5a5550",
               textAlign: "center", lineHeight: 1.3,
