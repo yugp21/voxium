@@ -7,7 +7,7 @@ import api from "../services/api";
 import toast from "react-hot-toast";
  
 const COUNTRIES = ["India","United States","United Kingdom","Canada","Australia","Germany","France","Japan","Brazil","South Africa","Singapore","UAE","Pakistan","Bangladesh","Nigeria","Kenya","Philippines","Indonesia","Malaysia","Other"];
-const LANGUAGES = ["English","Hindi","Spanish","French","Arabic","Portuguese","German","Japanese","Mandarin","Bengali","Urdu","Tamil","Telugu","Gujarati","Marathi","Other"];
+const LANGUAGES = ["English","Hindi","Spanish","French","Arabic","Portuguese","German","Japanese","Mandarin","Bengali","Urdu","Tamil","Telugu","Gujarati","Marathi","Punjabi","Kannada","Malayalam","Odia","Assamese","Other"];
 const STYLES = [
   { id: "Aggressive", icon: "⚔️", desc: "Attack hard, dominate fast" },
   { id: "Analytical", icon: "🔬", desc: "Logic, data, precision" },
@@ -35,7 +35,7 @@ const Onboarding = () => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    country: "", languages: [], playingStyle: "", bio: "",
+    country: "", state: "", district: "", languages: [], playingStyle: "", bio: "",
   });
  
   const toggleLanguage = (lang) => {
@@ -150,6 +150,31 @@ const Onboarding = () => {
                     }}
                   >{c}</motion.button>
                 ))}
+              </div>
+
+              {/* State/district — free text since regions vary by country;
+                  optional, so it doesn't block anyone who'd rather skip it */}
+              <div style={{ display:"flex", gap:"0.6rem", marginTop:"0.8rem" }}>
+                <input
+                  value={form.state}
+                  onChange={e => setForm({...form, state:e.target.value})}
+                  placeholder="State / Province (optional)"
+                  style={{
+                    flex:1, padding:"0.65rem 0.8rem", background:"#0d0d0d",
+                    border:"1px solid #2a2a2a", borderRadius:8, color:"#f5f0e8",
+                    fontFamily:"Inter, sans-serif", fontSize:"0.78rem", outline:"none",
+                  }}
+                />
+                <input
+                  value={form.district}
+                  onChange={e => setForm({...form, district:e.target.value})}
+                  placeholder="District / City (optional)"
+                  style={{
+                    flex:1, padding:"0.65rem 0.8rem", background:"#0d0d0d",
+                    border:"1px solid #2a2a2a", borderRadius:8, color:"#f5f0e8",
+                    fontFamily:"Inter, sans-serif", fontSize:"0.78rem", outline:"none",
+                  }}
+                />
               </div>
             </motion.div>
           )}
@@ -276,6 +301,7 @@ const Onboarding = () => {
                 }}>YOUR LEGEND PROFILE</div>
                 {[
                   { label:"Country", value:form.country },
+                  { label:"State/District", value:[form.state, form.district].filter(Boolean).join(", ") || "—" },
                   { label:"Languages", value:form.languages.join(", ") },
                   { label:"Style", value:form.playingStyle },
                 ].map(item => (
