@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
@@ -85,11 +85,7 @@ const Profile = () => {
 
   const isMyProfile = me?.username === username;
 
-  useEffect(() => {
-    fetchProfile();
-  }, [username]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api.get(`/users/${username}`);
@@ -107,7 +103,12 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [username, navigate]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetchProfile's first line (setLoading(true)) runs synchronously the instant it's called, before its own first await; this correctly resets the loading spinner when navigating between profiles ([username] changes)
+    fetchProfile();
+  }, [fetchProfile]);
 
   const handleFollow = async () => {
     if (!profile || followLoading) return;
