@@ -9,6 +9,7 @@ const TrophyCase = ({ username }) => {
   useEffect(() => {
     if (!username) return;
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resets loading state before a fresh fetch; the rest of the async work is deferred in .then/.catch/.finally below
     setLoading(true);
     api.get(`/achievements/${username}`)
       .then((res) => { if (!cancelled) setData(res.data.data); })
