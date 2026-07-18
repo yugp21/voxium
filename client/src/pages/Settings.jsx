@@ -39,6 +39,7 @@ const Settings = () => {
   // Prefill from the currently logged-in user (already in Redux — no extra fetch needed)
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time prefill once the async Redux user becomes available; re-runs only when `user` itself changes, no cascading render risk
       setForm({
         name: user.name || "",
         bio: user.bio || "",
