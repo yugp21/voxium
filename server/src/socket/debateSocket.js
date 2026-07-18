@@ -4,6 +4,7 @@ const Round = require("../models/Round");
 const Vote = require("../models/Vote");
 const User = require("../models/User");
 const { notify } = require("../utils/notify");
+const { checkAchievements } = require("../utils/checkAchievements");
 const { calculateEloChange, determineWinner } = require("../services/eloService");
 const { ROUND_DURATIONS } = require("../config/constants");
 
@@ -233,15 +234,25 @@ const finalizeDebate = async (io, debateId) => {
   });
 
   // Update player 1 stats and ELO
-  await User.findByIdAndUpdate(debate.player1._id, {
+  // currentStreak/longestStreak were declared on the schema but never
+  // actually maintained anywhere — win extends the streak, loss resets it,
+  // draw leaves it untouched. Read-then-write because a streak reset can't
+  // be expressed as a plain $inc.
+  const p1Before = await User.findById(debate.player1._id).select("stats tier elo");
+  const p1NewStreak = result === "player1" ? p1Before.stats.currentStreak + 1
+                     : result === "player2" ? 0
+                     : p1Before.stats.currentStreak;
+  const p1UpdatedUser = await User.findByIdAndUpdate(debate.player1._id, {
     elo: eloResult.player1.newElo,
     tier: eloResult.player1.newTier,
+    "stats.currentStreak": p1NewStreak,
+    "stats.longestStreak": Math.max(p1NewStreak, p1Before.stats.longestStreak),
     $inc: {
       "stats.wins": result === "player1" ? 1 : 0,
       "stats.losses": result === "player2" ? 1 : 0,
       "stats.totalDebates": 1,
     },
-  });
+  }, { new: true }).select("stats tier");
 
   await notify({
     userId: debate.player1._id,
@@ -261,17 +272,24 @@ const finalizeDebate = async (io, debateId) => {
       data: { newTier: eloResult.player1.newTier },
     });
   }
+  await checkAchievements(debate.player1._id, p1UpdatedUser.stats, p1UpdatedUser.tier);
 
   // Update player 2 stats and ELO
-  await User.findByIdAndUpdate(debate.player2._id, {
+  const p2Before = await User.findById(debate.player2._id).select("stats tier elo");
+  const p2NewStreak = result === "player2" ? p2Before.stats.currentStreak + 1
+                     : result === "player1" ? 0
+                     : p2Before.stats.currentStreak;
+  const p2UpdatedUser = await User.findByIdAndUpdate(debate.player2._id, {
     elo: eloResult.player2.newElo,
     tier: eloResult.player2.newTier,
+    "stats.currentStreak": p2NewStreak,
+    "stats.longestStreak": Math.max(p2NewStreak, p2Before.stats.longestStreak),
     $inc: {
       "stats.wins": result === "player2" ? 1 : 0,
       "stats.losses": result === "player1" ? 1 : 0,
       "stats.totalDebates": 1,
     },
-  });
+  }, { new: true }).select("stats tier");
 
   await notify({
     userId: debate.player2._id,
@@ -291,6 +309,7 @@ const finalizeDebate = async (io, debateId) => {
       data: { newTier: eloResult.player2.newTier },
     });
   }
+  await checkAchievements(debate.player2._id, p2UpdatedUser.stats, p2UpdatedUser.tier);
 
   // Broadcast final result to debate room
   io.to(`debate:${debateId}`).emit("debate_result", {
