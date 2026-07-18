@@ -2,35 +2,35 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
+import { Compass, Swords, Sparkles, Star, Crown, Flame, Zap, Medal, Landmark } from "lucide-react";
 import api from "../services/api";
- 
+
 const useResponsive = () => {
   const [w, setW] = useState(window.innerWidth);
   useEffect(() => { const h = () => setW(window.innerWidth); window.addEventListener("resize",h); return()=>window.removeEventListener("resize",h); },[]);
   return { isMobile: w<640, isTablet: w>=640&&w<1024 };
 };
- 
+
 const TIER_COLORS = {
   Wanderer:"#8a8070", Vanguard:"#6b9fb8", Oracle:"#9b7fd4",
   Ascendant:"#4caf82", Sovereign:"#c9a84c", Conqueror:"#e8604c", Immortal:"#ffffff",
 };
 const TIER_ICONS = {
-  Wanderer:"🗺️", Vanguard:"⚔️", Oracle:"🔮",
-  Ascendant:"🌟", Sovereign:"👑", Conqueror:"🔥", Immortal:"⚡",
+  Wanderer:Compass, Vanguard:Swords, Oracle:Sparkles,
+  Ascendant:Star, Sovereign:Crown, Conqueror:Flame, Immortal:Zap,
 };
- 
+
 const TABS = ["Global","Country"];
- 
+
 // ─── RANK BADGE ───────────────────────────────────────────────────
 const RankBadge = ({ rank }) => {
   const colors = { 1:"#FFD700", 2:"#C0C0C0", 3:"#CD7F32" };
-  const icons  = { 1:"👑", 2:"🥈", 3:"🥉" };
   if (rank<=3) return (
     <div style={{
       width:32,height:32,borderRadius:"50%",display:"flex",alignItems:"center",
       justifyContent:"center",background:`${colors[rank]}20`,
-      border:`1px solid ${colors[rank]}50`,fontSize:"0.9rem",
-    }}>{icons[rank]}</div>
+      border:`1px solid ${colors[rank]}50`,
+    }}>{rank === 1 ? <Crown size={16} color={colors[1]} /> : <Medal size={16} color={colors[rank]} />}</div>
   );
   return (
     <div style={{
@@ -40,13 +40,13 @@ const RankBadge = ({ rank }) => {
     }}>#{rank}</div>
   );
 };
- 
+
 // ─── PLAYER ROW ───────────────────────────────────────────────────
 const PlayerRow = ({ player, index, isMe, isMobile }) => {
   const navigate = useNavigate();
   const tierColor = TIER_COLORS[player.tier] || "#8a8070";
-  const tierIcon  = TIER_ICONS[player.tier]  || "🗺️";
- 
+  const TierIcon  = TIER_ICONS[player.tier]  || Compass;
+
   return (
     <motion.div
       initial={{ opacity:0, y:20 }}
@@ -80,7 +80,7 @@ const PlayerRow = ({ player, index, isMe, isMobile }) => {
         {player.profileImage ? (
           <img src={player.profileImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
         ) : (
-          <span style={{ fontSize:"1rem" }}>{tierIcon}</span>
+          <TierIcon size={16} color={tierColor} strokeWidth={1.75} />
         )}
       </div>
  
@@ -127,7 +127,6 @@ const PlayerRow = ({ player, index, isMe, isMobile }) => {
  
 // ─── MAIN LEADERBOARD ─────────────────────────────────────────────
 const Leaderboard = () => {
-  const navigate = useNavigate();
   const { user } = useSelector(s=>s.auth);
   const { isMobile, isTablet } = useResponsive();
   const [tab, setTab] = useState("Global");
@@ -164,34 +163,9 @@ const Leaderboard = () => {
  
   return (
     <div style={{ background:"#0a0a0a", minHeight:"100vh" }}>
-      {/* Navbar */}
-      <nav style={{
-        position:"fixed", top:0, left:0, right:0, zIndex:100,
-        padding: isMobile?"0.9rem 1.2rem":"0.9rem 2rem",
-        display:"flex", alignItems:"center", justifyContent:"space-between",
-        background:"#0f0f0fF0", backdropFilter:"blur(12px)",
-        borderBottom:"1px solid #1a1a1a",
-      }}>
-        <div style={{
-          fontFamily:"Cinzel Decorative,serif",
-          fontSize: isMobile?"0.85rem":"1rem",
-          color:"#c9a84c", letterSpacing:"0.2em", cursor:"pointer",
-        }} onClick={()=>navigate("/dashboard")}>UDA</div>
-        <motion.button
-          whileHover={{scale:1.05}} whileTap={{scale:0.95}}
-          onClick={()=>navigate("/dashboard")}
-          style={{
-            background:"transparent", border:"1px solid #2a2a2a",
-            color:"#8a8070", padding:"0.4rem 1rem",
-            fontFamily:"Cinzel,serif", fontSize:"0.68rem",
-            letterSpacing:"0.1em", cursor:"pointer", borderRadius:6,
-          }}
-        >← DASHBOARD</motion.button>
-      </nav>
- 
       <div style={{
         maxWidth:900, margin:"0 auto",
-        padding: isMobile ? "5rem 1rem 2rem" : "5rem 2rem 2rem",
+        padding: isMobile ? "2rem 1rem 2rem" : "2rem 2rem 2rem",
       }}>
         {/* Header */}
         <motion.div
@@ -223,7 +197,7 @@ const Leaderboard = () => {
                 fontFamily:"Inter,sans-serif", fontSize:"0.75rem", color:"#c9a84c",
               }}
             >
-              <span>⚔️</span>
+              <Swords size={14} />
               Your Rank: <strong>#{myRank}</strong>
             </motion.div>
           )}
@@ -283,7 +257,7 @@ const Leaderboard = () => {
             ))
           ) : players.length===0 ? (
             <div style={{ textAlign:"center", padding:"4rem 1rem" }}>
-              <div style={{ fontSize:"3rem", marginBottom:"1rem" }}>🏛️</div>
+              <div style={{ marginBottom:"1rem", display:"flex", justifyContent:"center" }}><Landmark size={44} color="#4a4540" strokeWidth={1.5} /></div>
               <div style={{ fontFamily:"Cinzel,serif", color:"#f5f0e8", marginBottom:"0.5rem" }}>
                 No Players Yet
               </div>
