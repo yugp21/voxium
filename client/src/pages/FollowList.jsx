@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import api from "../services/api";
 import toast from "react-hot-toast";
+import { Sword, Swords, ArrowLeft, Compass } from "lucide-react";
 
 const TIER_COLORS = { Wanderer: "#8a8070", Vanguard: "#6b9fb8", Oracle: "#9b7fd4", Ascendant: "#4caf82", Sovereign: "#c9a84c", Conqueror: "#e8604c", Immortal: "#ffffff" };
 
@@ -28,7 +29,7 @@ const UserRow = ({ person, onToggleFollow, isMe, busy }) => {
       >
         {person.profileImage
           ? <img src={person.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          : <span style={{ fontSize: "1.2rem" }}>⚔️</span>}
+          : <Sword size={18} color="#c9a84c" strokeWidth={1.75} />}
       </div>
 
       <div
@@ -43,7 +44,7 @@ const UserRow = ({ person, onToggleFollow, isMe, busy }) => {
         </div>
         {person.isFollowing && person.followsYou && (
           <div style={{ fontFamily: "Inter,sans-serif", fontSize: "0.65rem", color: "#c9a84c", marginTop: "0.15rem" }}>
-            ⚔️ You both follow each other
+            <Swords size={11} style={{ display: "inline", verticalAlign: "-1px", marginRight: 4 }} /> You both follow each other
           </div>
         )}
       </div>
@@ -145,8 +146,8 @@ const FollowList = () => {
         <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", marginBottom: "1.2rem" }}>
           <button
             onClick={() => navigate(`/profile/${username}`)}
-            style={{ background: "transparent", border: "none", color: "#8a8070", fontSize: "1.1rem", cursor: "pointer" }}
-          >←</button>
+            style={{ background: "transparent", border: "none", color: "#8a8070", cursor: "pointer", display: "flex", alignItems: "center" }}
+          ><ArrowLeft size={18} /></button>
           <h1 style={{ fontFamily: "Cinzel,serif", fontSize: "1rem", color: "#f5f0e8" }}>@{username}</h1>
         </div>
 
@@ -175,7 +176,7 @@ const FollowList = () => {
           </div>
         ) : users.length === 0 ? (
           <div style={{ textAlign: "center", padding: "3rem" }}>
-            <div style={{ fontSize: "2rem", marginBottom: "0.6rem" }}>🗺️</div>
+            <div style={{ marginBottom:"0.6rem", display:"flex", justifyContent:"center" }}><Compass size={28} color="#4a4540" strokeWidth={1.5} /></div>
             <div style={{ fontFamily: "Cinzel,serif", color: "#4a4540", fontSize: "0.8rem" }}>
               No {tab} yet
             </div>
