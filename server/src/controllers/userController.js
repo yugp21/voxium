@@ -34,11 +34,11 @@ const getProfile = asyncHandler(async (req, res) => {
 
 // ─── UPDATE PROFILE ───────────────────────────────────────────────
 const updateProfile = asyncHandler(async (req, res) => {
-  const { name, bio, country, languages, playingStyle } = req.body;
+  const { name, bio, country, state, district, languages, playingStyle } = req.body;
 
   const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
-    { $set: { name, bio, country, languages, playingStyle } },
+    { $set: { name, bio, country, state, district, languages, playingStyle } },
     { new: true, runValidators: true }
   ).select("-password -refreshToken");
 
@@ -49,13 +49,15 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 // ─── COMPLETE ONBOARDING ──────────────────────────────────────────
 const completeOnboarding = asyncHandler(async (req, res) => {
-  const { country, languages, playingStyle, bio } = req.body;
+  const { country, state, district, languages, playingStyle, bio } = req.body;
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
       $set: {
         country,
+        state,
+        district,
         languages,
         playingStyle,
         bio,

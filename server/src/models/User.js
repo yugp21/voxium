@@ -58,6 +58,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    state: {
+      type: String,
+      default: "",
+    },
+    district: {
+      type: String,
+      default: "",
+    },
     bio: {
       type: String,
       maxlength: [200, "Bio cannot exceed 200 characters"],
