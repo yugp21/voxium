@@ -22,6 +22,7 @@ app.use("/api/users",         require("./routes/userRoutes"));
 app.use("/api/debates",       require("./routes/debateRoutes"));
 app.use("/api/leaderboard",   require("./routes/leaderboardRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
+app.use("/api/achievements",  require("./routes/achievementRoutes"));
 app.use("/api/ai",            require("./routes/aiRoutes"));
 
 app.get("/api/health", (req, res) => res.json({ status:"ok", message:"Voxium API running" }));
