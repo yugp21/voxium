@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { setNotifications, markRead, clearUnread } from "../redux/slices/notificationSlice";
@@ -66,18 +66,26 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => { fetchNotifications(); }, []);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const res = await api.get("/notifications");
       dispatch(setNotifications(res.data.data));
-    } catch { toast.error("Failed to load notifications"); }
-    finally { setLoading(false); }
-  };
+    } catch {
+      toast.error("Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch]);
+
+  useEffect(() => { fetchNotifications(); }, [fetchNotifications]);
 
   const handleRead = async (id) => {
-    try { await api.put(`/notifications/${id}/read`); dispatch(markRead(id)); } catch {}
+    try {
+      await api.put(`/notifications/${id}/read`);
+      dispatch(markRead(id));
+    } catch {
+      // Silent by design: a failed read-receipt isn't worth interrupting the user for.
+    }
   };
   const handleReadAll = async () => {
     try {
@@ -85,14 +93,18 @@ const Notifications = () => {
       dispatch(clearUnread());
       list.forEach((n) => { if (!n.isRead) dispatch(markRead(n._id)); });
       toast.success("All marked as read");
-    } catch {}
+    } catch {
+      toast.error("Failed to mark all as read");
+    }
   };
   const handleDelete = async (id) => {
     try {
       await api.delete(`/notifications/${id}`);
       dispatch(setNotifications({ notifications: list.filter((n) => n._id !== id), unreadCount }));
       toast.success("Deleted");
-    } catch {}
+    } catch {
+      toast.error("Failed to delete notification");
+    }
   };
 
   const filtered = filter === "unread" ? list.filter((n) => !n.isRead) : list;
