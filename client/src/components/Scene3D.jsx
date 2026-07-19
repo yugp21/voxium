@@ -1,35 +1,33 @@
-import { Suspense, useRef, useMemo } from "react";
+import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Icosahedron, Points, PointMaterial } from "@react-three/drei";
 import { COLORS } from "../constants/theme";
+
+// Generated once, at module load time — completely outside any component
+// or hook body, so it's not part of React's render phase at all. This is
+// the actual fix: useMemo's callback still technically runs during render,
+// so react-hooks/purity correctly flagged Math.random() there too. These
+// positions never need to vary between renders or instances anyway.
+const PARTICLE_COUNT = 400;
+const PARTICLE_POSITIONS = new Float32Array(PARTICLE_COUNT * 3);
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  PARTICLE_POSITIONS[i * 3] = (Math.random() - 0.5) * 12;
+  PARTICLE_POSITIONS[i * 3 + 1] = (Math.random() - 0.5) * 12;
+  PARTICLE_POSITIONS[i * 3 + 2] = (Math.random() - 0.5) * 12;
+}
 
 // A field of drifting points in 3D space — replaces the old flat CSS
 // "particles" (which were just 2D divs faking depth with opacity).
 // These actually exist in 3D and respond to camera perspective.
 const ParticleField = () => {
   const ref = useRef();
-  // useMemo, not a plain call in the render body — Math.random() is an
-  // impure function; calling it directly during render regenerates a
-  // brand new random field on every re-render, which React's purity
-  // rules correctly flag. Computing it once and reusing it is both
-  // correct and cheaper.
-  const positions = useMemo(() => {
-    const count = 400;
-    const arr = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 12;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 12;
-    }
-    return arr;
-  }, []);
 
   useFrame((state) => {
     if (ref.current) ref.current.rotation.y = state.clock.elapsedTime * 0.02;
   });
 
   return (
-    <Points ref={ref} positions={positions} stride={3}>
+    <Points ref={ref} positions={PARTICLE_POSITIONS} stride={3}>
       <PointMaterial
         transparent
         color={COLORS.accent2}
