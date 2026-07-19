@@ -2,154 +2,102 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
-import { Compass, Swords, Sparkles, Star, Crown, Flame, Zap, Medal, Landmark } from "lucide-react";
+import { Compass, Swords, Sparkles, Star, Crown, Flame, Zap, Landmark } from "lucide-react";
 import api from "../services/api";
+import { COLORS } from "../constants/theme";
 
 const useResponsive = () => {
   const [w, setW] = useState(window.innerWidth);
   useEffect(() => { const h = () => setW(window.innerWidth); window.addEventListener("resize",h); return()=>window.removeEventListener("resize",h); },[]);
-  return { isMobile: w<640, isTablet: w>=640&&w<1024 };
+  return { isMobile: w<720 };
 };
 
-const TIER_COLORS = {
-  Wanderer:"#8a8070", Vanguard:"#6b9fb8", Oracle:"#9b7fd4",
-  Ascendant:"#4caf82", Sovereign:"#c9a84c", Conqueror:"#e8604c", Immortal:"#ffffff",
-};
-const TIER_ICONS = {
-  Wanderer:Compass, Vanguard:Swords, Oracle:Sparkles,
-  Ascendant:Star, Sovereign:Crown, Conqueror:Flame, Immortal:Zap,
-};
+const TIER_COLORS = { Wanderer:"#6b6a80", Vanguard:"#4d8cff", Oracle:"#a06bff", Ascendant:"#4caf82", Sovereign:"#7c5cff", Conqueror:"#ff5c7c", Immortal:"#00e5ff" };
+const TIER_ICONS = { Wanderer:Compass, Vanguard:Swords, Oracle:Sparkles, Ascendant:Star, Sovereign:Crown, Conqueror:Flame, Immortal:Zap };
 
-const TABS = ["Global","Country"];
-
-// ─── RANK BADGE ───────────────────────────────────────────────────
-const RankBadge = ({ rank }) => {
-  const colors = { 1:"#FFD700", 2:"#C0C0C0", 3:"#CD7F32" };
-  if (rank<=3) return (
-    <div style={{
-      width:32,height:32,borderRadius:"50%",display:"flex",alignItems:"center",
-      justifyContent:"center",background:`${colors[rank]}20`,
-      border:`1px solid ${colors[rank]}50`,
-    }}>{rank === 1 ? <Crown size={16} color={colors[1]} /> : <Medal size={16} color={colors[rank]} />}</div>
-  );
-  return (
-    <div style={{
-      width:32,height:32,borderRadius:"50%",display:"flex",alignItems:"center",
-      justifyContent:"center",background:"#1a1a1a",
-      fontFamily:"Cinzel,serif",fontSize:"0.7rem",color:"#4a4540",
-    }}>#{rank}</div>
-  );
-};
-
-// ─── PLAYER ROW ───────────────────────────────────────────────────
-const PlayerRow = ({ player, index, isMe, isMobile }) => {
+// ─── RANKED ROW ─────────────────────────────────────────────────────
+// The rank number itself is the dominant visual element — huge, thin,
+// editorial numerals — rather than a small badge or medal icon buried
+// in a card. This is the leaderboard's own structural idea, distinct
+// from Dashboard's ladder rail: rank expressed through TYPE SCALE.
+const RankedRow = ({ player, index, isMe, isMobile }) => {
   const navigate = useNavigate();
-  const tierColor = TIER_COLORS[player.tier] || "#8a8070";
-  const TierIcon  = TIER_ICONS[player.tier]  || Compass;
+  const tierColor = TIER_COLORS[player.tier] || "#6b6a80";
+  const TierIcon = TIER_ICONS[player.tier] || Compass;
+  const isTopThree = player.rank <= 3;
 
   return (
     <motion.div
-      initial={{ opacity:0, y:20 }}
-      animate={{ opacity:1, y:0 }}
-      transition={{ delay: index*0.04 }}
-      onClick={() => navigate(`/profile/${player.username}`)}
+      initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.03 }}
+      data-cursor="hover" onClick={() => navigate(`/profile/${player.username}`)}
       style={{
-        display:"flex", alignItems:"center",
-        gap: isMobile ? "0.8rem" : "1.2rem",
-        padding: isMobile ? "0.9rem 1rem" : "1rem 1.5rem",
-        background: isMe ? "#1a1408" : index%2===0 ? "#0d0d0d" : "transparent",
-        border: isMe ? "1px solid #c9a84c30" : "1px solid transparent",
-        borderRadius:10, cursor:"pointer",
-        transition:"all 0.2s",
+        display: "flex", alignItems: "center", gap: isMobile ? "1rem" : "1.8rem",
+        padding: isMobile ? "1rem 0" : "1.3rem 0.5rem",
+        borderTop: `1px solid ${COLORS.border}`, cursor: "pointer",
+        background: isMe ? `${COLORS.accent}08` : "transparent",
       }}
-      whileHover={{ background:"#141414", borderColor:"#2a2a2a" }}
     >
-      {/* Rank */}
-      <div style={{ minWidth:32 }}>
-        <RankBadge rank={player.rank} />
-      </div>
- 
-      {/* Avatar */}
       <div style={{
-        width: isMobile?36:44, height: isMobile?36:44,
-        borderRadius:"50%", overflow:"hidden",
-        border:`2px solid ${tierColor}40`, flexShrink:0,
-        background:"#1a1a1a", display:"flex",
-        alignItems:"center", justifyContent:"center",
+        fontFamily: "Inter, sans-serif", fontWeight: 200,
+        fontSize: isMobile ? "1.6rem" : "2.4rem", minWidth: isMobile ? 44 : 70,
+        color: isTopThree ? tierColor : COLORS.textFaint, lineHeight: 1, flexShrink: 0,
+      }}>{String(player.rank).padStart(2, "0")}</div>
+
+      <div style={{
+        width: isMobile ? 34 : 44, height: isMobile ? 34 : 44, borderRadius: "50%",
+        overflow: "hidden", background: COLORS.bgElevated, border: `1px solid ${tierColor}40`,
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
       }}>
-        {player.profileImage ? (
-          <img src={player.profileImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-        ) : (
-          <TierIcon size={16} color={tierColor} strokeWidth={1.75} />
-        )}
+        {player.profileImage
+          ? <img src={player.profileImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          : <TierIcon size={16} color={tierColor} />}
       </div>
- 
-      {/* Name + username */}
-      <div style={{ flex:1, minWidth:0 }}>
-        <div style={{
-          fontFamily:"Cinzel,serif", fontSize: isMobile?"0.8rem":"0.9rem",
-          color: isMe ? "#c9a84c" : "#f5f0e8", fontWeight:600,
-          overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
-        }}>
-          {player.name} {isMe && <span style={{fontSize:"0.6rem",color:"#c9a84c"}}>(YOU)</span>}
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: "Inter, sans-serif", fontSize: isMobile ? "0.85rem" : "0.95rem", fontWeight: 600, color: COLORS.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {player.name} {isMe && <span style={{ color: COLORS.accent2, fontWeight: 500 }}>(you)</span>}
         </div>
-        <div style={{
-          fontSize:"0.68rem", color:"#4a4540",
-          fontFamily:"Inter,sans-serif", marginTop:"0.1rem",
-        }}>@{player.username} · {player.country}</div>
+        <div style={{ fontFamily: "Inter, sans-serif", fontSize: "0.72rem", color: COLORS.textFaint }}>
+          @{player.username}{player.country ? ` · ${player.country}` : ""}
+        </div>
       </div>
- 
-      {/* Tier */}
+
       {!isMobile && (
-        <div style={{
-          fontFamily:"Cinzel,serif", fontSize:"0.72rem",
-          color:tierColor, letterSpacing:"0.08em", minWidth:80, textAlign:"center",
-        }}>{player.tier}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", minWidth: 110 }}>
+          <TierIcon size={14} color={tierColor} />
+          <span style={{ fontFamily: "Inter, sans-serif", fontSize: "0.78rem", fontWeight: 600, color: tierColor }}>{player.tier}</span>
+        </div>
       )}
- 
-      {/* Win Rate */}
-      {!isMobile && (
-        <div style={{
-          fontFamily:"JetBrains Mono,monospace", fontSize:"0.75rem",
-          color:"#4caf82", minWidth:50, textAlign:"center",
-        }}>{player["stats.winRate"]||player.stats?.winRate||0}%</div>
-      )}
- 
-      {/* ELO */}
-      <div style={{
-        fontFamily:"JetBrains Mono,monospace",
-        fontSize: isMobile?"0.85rem":"1rem",
-        color:"#c9a84c", fontWeight:700, minWidth: isMobile?50:70, textAlign:"right",
-      }}>{player.elo}</div>
+
+      <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.68rem", color: COLORS.textDim, minWidth: 50, textAlign: "right" }}>
+        {player.stats?.winRate || 0}%
+      </div>
+
+      <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: isMobile ? "0.85rem" : "0.95rem", fontWeight: 700, color: COLORS.text, minWidth: 60, textAlign: "right" }}>
+        {player.elo}
+      </div>
     </motion.div>
   );
 };
- 
-// ─── MAIN LEADERBOARD ─────────────────────────────────────────────
+
+// ─── MAIN ─────────────────────────────────────────────────────────
 const Leaderboard = () => {
-  const { user } = useSelector(s=>s.auth);
-  const { isMobile, isTablet } = useResponsive();
+  const { user } = useSelector((s) => s.auth);
+  const { isMobile } = useResponsive();
   const [tab, setTab] = useState("Global");
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [myRank, setMyRank] = useState(null);
- 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, [tab]);
- 
+
+  useEffect(() => { fetchLeaderboard(); }, [tab]);
+
   const fetchLeaderboard = async () => {
     setLoading(true);
     try {
-      let res;
-      if (tab==="Global") {
-        res = await api.get("/leaderboard/global");
-      } else {
-        res = await api.get(`/leaderboard/country/${user?.country || "India"}`);
-      }
+      const res = tab === "Global"
+        ? await api.get("/leaderboard/global")
+        : await api.get(`/leaderboard/country/${user?.country || "India"}`);
       setPlayers(res.data.data || []);
- 
-      // Get my rank
       if (user?._id) {
         const rankRes = await api.get(`/leaderboard/rank/${user._id}`);
         setMyRank(rankRes.data.data?.rank);
@@ -160,128 +108,75 @@ const Leaderboard = () => {
       setLoading(false);
     }
   };
- 
+
   return (
-    <div style={{ background:"#0a0a0a", minHeight:"100vh" }}>
-      <div style={{
-        maxWidth:900, margin:"0 auto",
-        padding: isMobile ? "2rem 1rem 2rem" : "2rem 2rem 2rem",
-      }}>
-        {/* Header */}
-        <motion.div
-          initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}
-          style={{ textAlign:"center", marginBottom:"2.5rem" }}
-        >
-          <div style={{
-            fontFamily:"JetBrains Mono,monospace", fontSize:"0.62rem",
-            color:"#c9a84c", letterSpacing:"0.4em", marginBottom:"0.8rem",
-          }}>HALL OF FAME</div>
-          <h1 style={{
-            fontFamily:"Cinzel,serif",
-            fontSize: isMobile?"1.8rem":"clamp(2rem,5vw,3rem)",
-            color:"#f5f0e8", fontWeight:700, marginBottom:"0.5rem",
-          }}>Global Leaderboard</h1>
-          <p style={{ color:"#4a4540", fontSize:"0.82rem", fontFamily:"Inter,sans-serif" }}>
-            The greatest debaters in the arena
-          </p>
- 
-          {/* My rank pill */}
+    <div style={{ background: COLORS.bg, minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: isMobile ? "2rem 1.2rem" : "3rem 2rem" }}>
+
+        {/* Header — editorial, not a card */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
+          <div>
+            <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", color: COLORS.accent2, letterSpacing: "0.2em", marginBottom: "0.5rem" }}>
+              THE STANDINGS
+            </div>
+            <h1 style={{ fontFamily: "Inter, sans-serif", fontSize: isMobile ? "1.8rem" : "2.4rem", fontWeight: 800, color: COLORS.text, letterSpacing: "-0.02em" }}>
+              Leaderboard
+            </h1>
+          </div>
           {myRank && (
-            <motion.div
-              initial={{opacity:0,scale:0.9}} animate={{opacity:1,scale:1}}
-              transition={{delay:0.3}}
-              style={{
-                display:"inline-flex", alignItems:"center", gap:"0.5rem",
-                background:"#1a1408", border:"1px solid #c9a84c30",
-                borderRadius:20, padding:"0.4rem 1rem", marginTop:"1rem",
-                fontFamily:"Inter,sans-serif", fontSize:"0.75rem", color:"#c9a84c",
-              }}
-            >
-              <Swords size={14} />
-              Your Rank: <strong>#{myRank}</strong>
-            </motion.div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", color: COLORS.textFaint, letterSpacing: "0.12em" }}>YOUR RANK</div>
+              <div style={{ fontFamily: "Inter, sans-serif", fontSize: "1.6rem", fontWeight: 700, color: COLORS.accent2 }}>#{myRank}</div>
+            </div>
           )}
-        </motion.div>
- 
-        {/* Tabs */}
-        <div style={{
-          display:"flex", gap:"0.5rem",
-          marginBottom:"1.5rem",
-          background:"#111", border:"1px solid #1e1e1e",
-          borderRadius:10, padding:"0.3rem",
-          width:"fit-content",
-        }}>
-          {TABS.map(t => (
-            <motion.button key={t}
-              onClick={()=>setTab(t)}
+        </div>
+
+        {/* Tab toggle — minimal underline, not pill buttons on a card */}
+        <div style={{ display: "flex", gap: "1.5rem", borderBottom: `1px solid ${COLORS.border}`, marginBottom: "0.5rem" }}>
+          {["Global", "Country"].map((t) => (
+            <button key={t} data-cursor="hover" onClick={() => setTab(t)}
               style={{
-                padding:"0.5rem 1.5rem", borderRadius:8,
-                background: tab===t ? "linear-gradient(135deg,#c9a84c,#a07830)" : "transparent",
-                border:"none", color: tab===t ? "#0a0a0a" : "#8a8070",
-                fontFamily:"Cinzel,serif", fontSize:"0.72rem",
-                letterSpacing:"0.1em", cursor:"pointer", fontWeight: tab===t ? 700 : 400,
-                transition:"all 0.2s",
+                background: "transparent", border: "none", cursor: "pointer",
+                padding: "0.7rem 0", fontFamily: "Inter, sans-serif", fontSize: "0.85rem", fontWeight: 600,
+                color: tab === t ? COLORS.text : COLORS.textFaint,
+                borderBottom: tab === t ? `2px solid ${COLORS.accent2}` : "2px solid transparent",
+                marginBottom: -1,
               }}
-            >{t}</motion.button>
+            >{t}</button>
           ))}
         </div>
- 
-        {/* Table Header */}
-        {!isMobile && (
-          <div style={{
-            display:"flex", alignItems:"center",
-            gap:"1.2rem", padding:"0.6rem 1.5rem",
-            marginBottom:"0.5rem",
-          }}>
-            <div style={{minWidth:32}}/>
-            <div style={{minWidth:44}}/>
-            <div style={{flex:1, fontSize:"0.62rem", color:"#4a4540", fontFamily:"Cinzel,serif", letterSpacing:"0.1em"}}>PLAYER</div>
-            <div style={{minWidth:80, textAlign:"center", fontSize:"0.62rem", color:"#4a4540", fontFamily:"Cinzel,serif", letterSpacing:"0.1em"}}>TIER</div>
-            <div style={{minWidth:50, textAlign:"center", fontSize:"0.62rem", color:"#4a4540", fontFamily:"Cinzel,serif", letterSpacing:"0.1em"}}>WIN%</div>
-            <div style={{minWidth:70, textAlign:"right", fontSize:"0.62rem", color:"#4a4540", fontFamily:"Cinzel,serif", letterSpacing:"0.1em"}}>ELO</div>
+
+        {/* Column labels */}
+        {!isMobile && !loading && players.length > 0 && (
+          <div style={{ display: "flex", alignItems: "center", gap: "1.8rem", padding: "0.8rem 0.5rem 0", fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", color: COLORS.textFaint, letterSpacing: "0.1em" }}>
+            <div style={{ minWidth: 70 }}>RANK</div>
+            <div style={{ width: 44 }} />
+            <div style={{ flex: 1 }}>PLAYER</div>
+            <div style={{ minWidth: 110 }}>TIER</div>
+            <div style={{ minWidth: 50, textAlign: "right" }}>WIN%</div>
+            <div style={{ minWidth: 60, textAlign: "right" }}>ELO</div>
           </div>
         )}
- 
-        {/* Players List */}
-        <div style={{ display:"flex", flexDirection:"column", gap:"0.4rem" }}>
-          {loading ? (
-            Array.from({length:8}).map((_,i) => (
-              <motion.div key={i}
-                animate={{ opacity:[0.3,0.6,0.3] }}
-                transition={{ duration:1.5, repeat:Infinity, delay:i*0.1 }}
-                style={{
-                  height:64, background:"#111", borderRadius:10,
-                  border:"1px solid #1a1a1a",
-                }}
-              />
-            ))
-          ) : players.length===0 ? (
-            <div style={{ textAlign:"center", padding:"4rem 1rem" }}>
-              <div style={{ marginBottom:"1rem", display:"flex", justifyContent:"center" }}><Landmark size={44} color="#4a4540" strokeWidth={1.5} /></div>
-              <div style={{ fontFamily:"Cinzel,serif", color:"#f5f0e8", marginBottom:"0.5rem" }}>
-                No Players Yet
-              </div>
-              <div style={{ fontSize:"0.78rem", color:"#4a4540", fontFamily:"Inter,sans-serif" }}>
-                Be the first legend in this category
-              </div>
-            </div>
-          ) : (
-            <AnimatePresence>
-              {players.map((player, i) => (
-                <PlayerRow
-                  key={player._id}
-                  player={player}
-                  index={i}
-                  isMe={player._id===user?._id}
-                  isMobile={isMobile}
-                />
-              ))}
-            </AnimatePresence>
-          )}
-        </div>
+
+        {loading ? (
+          <div style={{ padding: "3rem 0", textAlign: "center", color: COLORS.textFaint, fontFamily: "JetBrains Mono, monospace", fontSize: "0.75rem" }}>
+            LOADING STANDINGS...
+          </div>
+        ) : players.length === 0 ? (
+          <div style={{ padding: "3rem 0", textAlign: "center" }}>
+            <Landmark size={36} color={COLORS.textFaint} strokeWidth={1.5} style={{ marginBottom: "0.8rem" }} />
+            <div style={{ fontFamily: "Inter, sans-serif", color: COLORS.textDim, fontSize: "0.85rem" }}>No rankings yet for this view.</div>
+          </div>
+        ) : (
+          <AnimatePresence>
+            {players.map((p, i) => (
+              <RankedRow key={p._id} player={p} index={i} isMe={p._id === user?._id} isMobile={isMobile} />
+            ))}
+          </AnimatePresence>
+        )}
       </div>
     </div>
   );
 };
- 
+
 export default Leaderboard;
