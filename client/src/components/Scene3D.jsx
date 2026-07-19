@@ -1,7 +1,6 @@
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Icosahedron, Points, PointMaterial } from "@react-three/drei";
-import * as THREE from "three";
 import { COLORS } from "../constants/theme";
 
 // A field of drifting points in 3D space — replaces the old flat CSS
@@ -9,13 +8,21 @@ import { COLORS } from "../constants/theme";
 // These actually exist in 3D and respond to camera perspective.
 const ParticleField = () => {
   const ref = useRef();
-  const count = 400;
-  const positions = new Float32Array(count * 3);
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 12;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 12;
-  }
+  // useMemo, not a plain call in the render body — Math.random() is an
+  // impure function; calling it directly during render regenerates a
+  // brand new random field on every re-render, which React's purity
+  // rules correctly flag. Computing it once and reusing it is both
+  // correct and cheaper.
+  const positions = useMemo(() => {
+    const count = 400;
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      arr[i * 3] = (Math.random() - 0.5) * 12;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 12;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 12;
+    }
+    return arr;
+  }, []);
 
   useFrame((state) => {
     if (ref.current) ref.current.rotation.y = state.clock.elapsedTime * 0.02;
