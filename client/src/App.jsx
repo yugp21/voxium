@@ -6,6 +6,7 @@ import { authService } from "./services/authService";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Layout from "./components/Layout";
+import SmoothScrollProvider from "./components/SmoothScrollProvider";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -44,6 +45,7 @@ function App() {
   }, [dispatch]);
 
   return (
+    <SmoothScrollProvider>
     <Routes>
       {/* Public */}
       <Route path="/" element={<Landing />} />
@@ -68,6 +70,7 @@ function App() {
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </SmoothScrollProvider>
   );
 }
 
