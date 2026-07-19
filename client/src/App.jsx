@@ -5,6 +5,7 @@ import { setUser, clearUser } from "./redux/slices/authSlice";
 import { authService } from "./services/authService";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import Layout from "./components/Layout";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -51,18 +52,18 @@ function App() {
 
       {/* Protected */}
       <Route path="/onboarding"        element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-      <Route path="/dashboard"         element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/leaderboard"       element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-      <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/dashboard"         element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+      <Route path="/leaderboard"       element={<ProtectedRoute><Layout><Leaderboard /></Layout></ProtectedRoute>} />
+      <Route path="/profile/:username" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
       <Route path="/matchmaking"       element={<ProtectedRoute><Matchmaking /></ProtectedRoute>} />
       <Route path="/prep/:debateId"    element={<ProtectedRoute><PrepWindow /></ProtectedRoute>} />
       <Route path="/debate/:debateId"  element={<ProtectedRoute><DebateRoom /></ProtectedRoute>} />
-      <Route path="/result/:debateId"  element={<ProtectedRoute><DebateResult /></ProtectedRoute>} />
-      <Route path="/ai/topics"         element={<ProtectedRoute><AITopics /></ProtectedRoute>} />
-      <Route path="/notifications"     element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-      <Route path="/search"            element={<ProtectedRoute><SearchUsers /></ProtectedRoute>} />
-      <Route path="/settings"          element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-      <Route path="/profile/:username/connections" element={<ProtectedRoute><FollowList /></ProtectedRoute>} />
+      <Route path="/result/:debateId"  element={<ProtectedRoute><Layout><DebateResult /></Layout></ProtectedRoute>} />
+      <Route path="/ai/topics"         element={<ProtectedRoute><Layout><AITopics /></Layout></ProtectedRoute>} />
+      <Route path="/notifications"     element={<ProtectedRoute><Layout><Notifications /></Layout></ProtectedRoute>} />
+      <Route path="/search"            element={<ProtectedRoute><Layout><SearchUsers /></Layout></ProtectedRoute>} />
+      <Route path="/settings"          element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+      <Route path="/profile/:username/connections" element={<ProtectedRoute><Layout><FollowList /></Layout></ProtectedRoute>} />
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
