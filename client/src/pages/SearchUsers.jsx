@@ -14,9 +14,12 @@ const SearchUsers = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef(null);
-
   useEffect(() => {
-    if (query.trim().length < 2) { setResults([]); return; }
+    if (query.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clearing stale results once the query drops below the search threshold; only re-runs when `query` itself changes, no cascading render risk
+      setResults([]);
+      return;
+    }
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => search(query), 400);
     return () => clearTimeout(debounceRef.current);
