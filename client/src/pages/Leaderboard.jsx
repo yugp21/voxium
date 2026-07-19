@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
@@ -89,9 +89,7 @@ const Leaderboard = () => {
   const [loading, setLoading] = useState(true);
   const [myRank, setMyRank] = useState(null);
 
-  useEffect(() => { fetchLeaderboard(); }, [tab]);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
     try {
       const res = tab === "Global"
@@ -107,7 +105,9 @@ const Leaderboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [tab, user]);
+
+  useEffect(() => { fetchLeaderboard(); }, [fetchLeaderboard]);
 
   return (
     <div style={{ background: COLORS.bg, minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif" }}>
